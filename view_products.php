@@ -28,12 +28,16 @@ if(isset($_POST['add_to_cart'])){
       $warning_msg[] = 'Cart is full!';
    }else{
 
+      // Retrieve the product price from the products table
       $select_price = $conn->prepare("SELECT * FROM `products` WHERE id = ? LIMIT 1");
       $select_price->execute([$product_id]);
       $fetch_price = $select_price->fetch(PDO::FETCH_ASSOC);
 
+      // Insert the product into the cart table, including the price
       $insert_cart = $conn->prepare("INSERT INTO `cart`(id, user_id, product_id, price, qty) VALUES(?,?,?,?,?)");
       $insert_cart->execute([$id, $user_id, $product_id, $fetch_price['price'], $qty]);
+
+      // Success message
       $success_msg[] = 'Added to cart!';
    }
 
@@ -50,7 +54,6 @@ if(isset($_POST['add_to_cart'])){
    <title>View Products</title>
 
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
-
    <link rel="stylesheet" href="css/style.css">
 
 </head>
@@ -65,21 +68,22 @@ if(isset($_POST['add_to_cart'])){
    <div class="box-container">
 
    <?php 
+      // Fetch all products
       $select_products = $conn->prepare("SELECT * FROM `products`");
       $select_products->execute();
       if($select_products->rowCount() > 0){
-         while($fetch_prodcut = $select_products->fetch(PDO::FETCH_ASSOC)){
+         while($fetch_product = $select_products->fetch(PDO::FETCH_ASSOC)){
    ?>
    <form action="" method="POST" class="box">
-      <img src="uploaded_files/<?= $fetch_prodcut['image']; ?>" class="image" alt="">
-      <h3 class="name"><?= $fetch_prodcut['name'] ?></h3>
-      <input type="hidden" name="product_id" value="<?= $fetch_prodcut['id']; ?>">
+      <img src="uploaded_files/<?= $fetch_product['image']; ?>" class="image" alt="">
+      <h3 class="name"><?= $fetch_product['name'] ?></h3>
+      <input type="hidden" name="product_id" value="<?= $fetch_product['id']; ?>">
       <div class="flex">
-         <p class="price"><i class="fas fa-indian-rupee-sign"></i><?= $fetch_prodcut['price'] ?></p>
+         <p class="price"><i class="fas fa-indian-rupee-sign"></i><?= $fetch_product['price'] ?></p>
          <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
       </div>
       <input type="submit" name="add_to_cart" value="add to cart" class="btn">
-      <a href="checkout.php?get_id=<?= $fetch_prodcut['id']; ?>" class="delete-btn">buy now</a>
+      <a href="checkout.php?get_id=<?= $fetch_product['id']; ?>" class="delete-btn">buy now</a>
    </form>
    <?php
       }
@@ -91,12 +95,6 @@ if(isset($_POST['add_to_cart'])){
    </div>
 
 </section>
-
-
-
-
-
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
