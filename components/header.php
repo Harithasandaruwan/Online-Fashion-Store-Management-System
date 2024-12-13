@@ -1,7 +1,7 @@
 <header class="header">
 
    <section class="flex">
-      <a href="#" class="logo">Logo</a>
+      <a href="home.php" class="logo"><img src="image/logo2.png" alt="no image" style="margin-top: 10px;  margin-bottom: 8px; margin-left: 20px; border-radius: 50%; width: 50px;"></a>
 
       <nav class="navbar">
          <a href="add_product.php">add product</a>
